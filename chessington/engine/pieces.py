@@ -32,6 +32,7 @@ class Piece(ABC):
         return board.find_piece(self)
 
 
+
 class Pawn(Piece):
     """
     A class representing a chess pawn.
@@ -46,12 +47,14 @@ class Pawn(Piece):
         else:
             direction = -1
             start_row=6
-        one_step=Square.at(current_square.row+direction,current_square.col)
-        double_step = Square.at(current_square.row + (2 * direction), current_square.col)
-        if board.square_is_empty(one_step):
-            moves.append(one_step)
-            if board.square_is_empty(double_step) and current_square.row == start_row:
-                moves.append(double_step)
+        if 1<= current_square.row <= 6:
+            one_step=Square.at(current_square.row+direction,current_square.col)
+            if board.square_is_empty(one_step):
+                moves.append(one_step)
+                if current_square.row == start_row:
+                    double_step = Square.at(current_square.row + (2 * direction), current_square.col)
+                    if board.square_is_empty(double_step):
+                        moves.append(double_step)
         return moves
 
 

@@ -65,6 +65,13 @@ class Board:
         #Checks a square is empty
         return self.get_piece(square) is None
 
+    def is_square(self, square):
+        try:
+            Square.at[square.row+direction][square.col]
+        except TypeError:
+            return False
+
+
     def find_piece(self, piece_to_find):
         """
         Searches for the given piece on the board and returns its square.
