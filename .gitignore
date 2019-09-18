@@ -21,3 +21,4 @@ pip-log.txt
 .idea/*
 .python-version
 .vscode/*
+venv/
