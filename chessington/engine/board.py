@@ -61,6 +61,10 @@ class Board:
         """
         return self.board[square.row][square.col]
 
+    def square_is_empty(self, square):
+        #Checks a square is empty
+        return self.get_piece(square) is None
+
     def find_piece(self, piece_to_find):
         """
         Searches for the given piece on the board and returns its square.

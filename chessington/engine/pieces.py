@@ -28,6 +28,9 @@ class Piece(ABC):
         current_square = board.find_piece(self)
         board.move_piece(current_square, new_square)
 
+    def position(self,board):
+        return board.find_piece(self)
+
 
 class Pawn(Piece):
     """
@@ -35,13 +38,21 @@ class Pawn(Piece):
     """
 
     def get_available_moves(self, board):
+        moves = []
+        current_square = self.position(board)
         if self.player == Player.WHITE:
             direction = 1
+            start_row=1
         else:
             direction = -1
-        current_square = board.find_piece(self)
-        next_square = Square.at(current_square.row + direction, current_square.col)
-        return [next_square]
+            start_row=6
+        one_step=Square.at(current_square.row+direction,current_square.col)
+        double_step = Square.at(current_square.row + (2 * direction), current_square.col)
+        if board.square_is_empty(one_step):
+            moves.append(one_step)
+            if board.square_is_empty(double_step) and current_square.row == start_row:
+                moves.append(double_step)
+        return moves
 
 
 class Knight(Piece):
