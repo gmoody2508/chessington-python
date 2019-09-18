@@ -49,6 +49,12 @@ class Board:
 
         return board
 
+    def in_board(self, square):
+        if 0 <= square.row <= 7 and 0 <= square.col <= 7:
+            return True
+        return False
+
+
     def set_piece(self, square, piece):
         """
         Places the piece at the given position on the board.
@@ -65,12 +71,12 @@ class Board:
         #Checks a square is empty
         return self.get_piece(square) is None
 
-    def is_square(self, square):
-        try:
-            Square.at[square.row+direction][square.col]
-        except TypeError:
-            return False
-
+    def has_enemy(self, square):
+        if self.in_board(square):
+            if not self.square_is_empty(square):
+                if not self.get_piece(square).player == self.current_player:
+                    return True
+        return False
 
     def find_piece(self, piece_to_find):
         """

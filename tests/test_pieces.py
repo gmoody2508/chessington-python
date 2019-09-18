@@ -317,6 +317,7 @@ class TestPawns:
 
          # Arrange
         board = Board.empty()
+        board.current_player = Player.BLACK
         pawn = Pawn(Player.BLACK)
         pawn_square = Square.at(3, 4)
         board.set_piece(pawn_square, pawn)

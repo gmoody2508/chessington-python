@@ -28,8 +28,11 @@ class Piece(ABC):
         current_square = board.find_piece(self)
         board.move_piece(current_square, new_square)
 
-    def position(self,board):
+    def position(self, board):
         return board.find_piece(self)
+
+    def direction(self):
+        return {Player.WHITE: 1, Player.BLACK: -1}[self.player]
 
 
 
@@ -41,21 +44,28 @@ class Pawn(Piece):
     def get_available_moves(self, board):
         moves = []
         current_square = self.position(board)
-        if self.player == Player.WHITE:
-            direction = 1
-            start_row=1
-        else:
-            direction = -1
-            start_row=6
-        if 1<= current_square.row <= 6:
-            one_step=Square.at(current_square.row+direction,current_square.col)
-            if board.square_is_empty(one_step):
-                moves.append(one_step)
-                if current_square.row == start_row:
-                    double_step = Square.at(current_square.row + (2 * direction), current_square.col)
-                    if board.square_is_empty(double_step):
-                        moves.append(double_step)
+        start_row = {Player.WHITE: 1, Player.BLACK: 6}[self.player]
+        one_step = Square.at(current_square.row + self.direction(), current_square.col)
+        if board.in_board(one_step) and board.square_is_empty(one_step):
+            moves.append(one_step)
+            if current_square.row == start_row:
+                double_step = Square.at(current_square.row + (2 * self.direction()), current_square.col)
+                if board.square_is_empty(double_step):
+                    moves.append(double_step)
+        moves += self.attackable_squares(board)
         return moves
+
+    def attackable_squares(self, board):
+        current_square = self.position(board)
+        left_diagonal = Square.at(current_square.row + self.direction(), current_square.col - 1)
+        right_diagonal = Square.at(current_square.row + self.direction(), current_square.col + 1)
+
+        attack_moves = []
+        if board.has_enemy(left_diagonal):
+            attack_moves.append(left_diagonal)
+        if board.has_enemy(right_diagonal):
+            attack_moves.append(right_diagonal)
+        return attack_moves
 
 
 class Knight(Piece):
