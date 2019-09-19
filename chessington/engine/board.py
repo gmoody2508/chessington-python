@@ -50,9 +50,7 @@ class Board:
         return board
 
     def in_board(self, square):
-        if 0 <= square.row <= 7 and 0 <= square.col <= 7:
-            return True
-        return False
+        return 0 <= square.row <= 7 and 0 <= square.col <= 7
 
 
     def set_piece(self, square, piece):
