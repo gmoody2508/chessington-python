@@ -1,6 +1,6 @@
 from chessington.engine.board import Board
 from chessington.engine.data import Player, Square
-from chessington.engine.pieces import Pawn
+from chessington.engine.pieces import Pawn, King
 
 class TestPawns:
 
@@ -332,3 +332,20 @@ class TestPawns:
         # Assert
         assert Square.at(2, 3) not in moves
         assert Square.at(2, 5) not in moves
+
+class TestKings:
+
+    @staticmethod
+    def test_white_king_can_move_up_one_square():
+
+        # Arrange
+        board = Board.empty()
+        king = King(Player.WHITE)
+        square = Square.at(2, 4)
+        board.set_piece(square, king)
+
+        # Act
+        moves = king.get_available_moves(board)
+
+        # Assert
+        assert Square.at(3, 4) in moves

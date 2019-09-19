@@ -78,6 +78,13 @@ class Board:
                     return True
         return False
 
+    def has_friend(self, square):
+        if self.in_board(square):
+            if not self.square_is_empty(square):
+                if self.get_piece(square).player == self.current_player:
+                    return True
+        return False
+
     def find_piece(self, piece_to_find):
         """
         Searches for the given piece on the board and returns its square.
