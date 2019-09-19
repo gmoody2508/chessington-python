@@ -34,51 +34,83 @@ class Piece(ABC):
     def direction(self):
         return {Player.WHITE: 1, Player.BLACK: -1}[self.player]
 
-    def many_steps(self, move, current_square):
+    def many_steps(self, board, move, current_square):
         moves=[]
+        step = {'one_step': [1,0], 'left_step':[0,-1], 'right_step':[0,1], 'left_diagonal':[1,-1], 'right_diagonal':[1,1]}
+        xy=step[move]
+        for i in range(0,7):
+            next_square = Square.at(current_square.row + (self.direction() * i * xy[0]), current_square.col + (self_direction() * i * xy[1]))
+            if board.in_board(next_square):
+                if board.square_is_empty(next_square):
+                    moves.append(next_square)
+                elif board.has_enemy(next_square):
+                    moves.append(next_square)
+                    break
+                elif board.has_friend(next_square):
+                    break
         if move == 'one_step':
             for i in range(1,7):
                 one_step = Square.at(current_square.row + (self.direction() * i), current_square.col)
-                if board.square_is_empty(one_step) and board.in_board(one_step):
-                    moves.append(one_step)
-                elif board.has_enemy(one_step):
-                    moves.append(one_step)
+                if board.in_board(one_step):
+                    if board.square_is_empty(one_step):
+                        moves.append(one_step)
+                    elif board.has_enemy(one_step):
+                        moves.append(one_step)
+                        break
+                    elif board.has_friend(one_step):
+                        break
                 else:
                     break
         elif move == 'left_step':
             for i in range(1,7):
                 left_step = Square.at(current_square.row, current_square.col - i)
-                if board.square_is_empty(left_step) and board.in_board(left_step):
-                    moves.append(left_step)
-                elif board.has_enemy(left_step):
-                    moves.append(left_step)
+                if board.in_board(left_step):
+                    if board.square_is_empty(left_step):
+                        moves.append(left_step)
+                    elif board.has_enemy(left_step):
+                        moves.append(left_step)
+                        break
+                    elif board.has_friend(left_step):
+                        break
                 else:
                     break
         elif move == 'right_step':
             for i in range(1,7):
                 right_step = Square.at(current_square.row, current_square.col + i)
-                if board.square_is_empty(right_step) and board.in_board(right_step):
-                    moves.append(right_step)
-                elif board.has_enemy(right_step):
-                    moves.append(right_step)
+                if board.in_board(right_step):
+                    if board.square_is_empty(right_step):
+                        moves.append(right_step)
+                    elif board.has_enemy(right_step):
+                        moves.append(right_step)
+                        break
+                    elif board.has_friend(right_step):
+                        break
                 else:
                     break
         elif move == 'left_diagonal':
             for i in range(1,7):
                 left_diagonal = Square.at(current_square.row + (self.direction() * i), current_square.col - i)
-                if board.square_is_empty(left_diagonal) and board.in_board(left_diagonal):
-                    moves.append(left_diagonal)
-                elif board.has_enemy(left_diagonal):
-                    moves.append(left_diagonal)
+                if board.in_board(left_diagonal):
+                    if board.square_is_empty(left_diagonal):
+                        moves.append(left_diagonal)
+                    elif board.has_enemy(left_diagonal):
+                        moves.append(left_diagonal)
+                        break
+                    elif board.has_friend(left_diagonal):
+                        break
                 else:
                     break
         elif move == 'right_diagonal':
             for i in range(1,7):
                 right_diagonal = Square.at(current_square.row + (self.direction() * i), current_square.col + i)
-                if board.square_is_empty(right_diagonal) and board.in_board(right_diagonal):
-                    moves.append(right_diagonal)
-                elif board.has_enemy(right_diagonal):
-                    moves.append(right_diagonal)
+                if board.in_board(right_diagonal):
+                    if board.square_is_empty(right_diagonal):
+                        moves.append(right_diagonal)
+                    elif board.has_enemy(right_diagonal):
+                        moves.append(right_diagonal)
+                        break
+                    elif board.has_friend(right_diagonal):
+                        break
                 else:
                     break
         return moves
@@ -139,7 +171,9 @@ class Rook(Piece):
     """
 
     def get_available_moves(self, board):
-        return []
+        current_square = self.position(board)
+        moves = self.many_steps(board, )
+        return moves
 
 
 class Queen(Piece):
@@ -149,9 +183,7 @@ class Queen(Piece):
 
     def get_available_moves(self, board):
         current_square = self.position(board)
-        moves = self.many_steps('one_step', current_square) + self.many_steps('left_step', current_square) +
-        self.many_steps('right_step', current_square) + self.many_steps('left_diagonal', current_square) +
-        self.many_steps('right_diagonal', current_square)
+        moves = self.many_steps(board, 'one_step', current_square) + self.many_steps(board, 'left_step', current_square) + self.many_steps(board, 'right_step', current_square) + self.many_steps(board, 'left_diagonal', current_square) + self.many_steps(board, 'right_diagonal', current_square)
         return moves
 
 
