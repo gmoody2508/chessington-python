@@ -19,6 +19,7 @@ class Board:
     def __init__(self, player, board_state):
         self.current_player = Player.WHITE
         self.board = board_state
+        self.en_passant = None
 
     @staticmethod
     def empty():
@@ -99,6 +100,45 @@ class Board:
         """
         moving_piece = self.get_piece(from_square)
         if moving_piece is not None and moving_piece.player == self.current_player:
+            moving_piece.has_moved = True
             self.set_piece(to_square, moving_piece)
             self.set_piece(from_square, None)
+            self.handle_castling(moving_piece, from_square, to_square)
+            self.handle_en_passant_capture(moving_piece, to_square)
+            self.en_passant = self.record_double_move(moving_piece,from_square,to_square)
             self.current_player = self.current_player.opponent()
+
+    def record_double_move(self, moving_piece, from_square, to_square):
+        if isinstance(moving_piece,Pawn):
+            if abs(from_square.row - to_square.row) > 1:
+                return to_square
+        return None
+
+    def handle_en_passant_capture(self, moving_piece, to_square):
+        if self.en_passant is None:
+            return
+        if not isinstance(moving_piece, Pawn):
+            return
+        if to_square.col == self.en_passant.col:
+            if to_square.row == 2 or to_square.row == 5:
+                self.set_piece(self.en_passant, None)
+
+
+    def handle_castling(self, moving_piece, from_square, to_square):
+        if isinstance(moving_piece, King):
+            if abs(from_square.col - to_square.col) > 1:
+                if to_square.row == 0:
+                    if to_square.col == 2:
+                        self.set_piece(Square.at(0,0), None)
+                        self.set_piece(Square.at(0,3), Rook(self.current_player))
+                    elif to_square.col == 6:
+                        self.set_piece(Square.at(0, 7), None)
+                        self.set_piece(Square.at(0, 5), Rook(self.current_player))
+                elif to_square.row == 7:
+                    if to_square.col == 2:
+                        self.set_piece(Square.at(7, 0), None)
+                        self.set_piece(Square.at(7, 3), Rook(self.current_player))
+                    elif to_square.col == 6:
+                        self.set_piece(Square.at(7, 7), None)
+                        self.set_piece(Square.at(7, 5), Rook(self.current_player))
+        return
