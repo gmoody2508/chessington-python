@@ -105,15 +105,18 @@ class Board:
             self.set_piece(from_square, None)
             self.handle_castling(moving_piece, from_square, to_square)
             self.handle_en_passant_capture(moving_piece, to_square)
-            self.en_passant = self.record_double_move(moving_piece,from_square,to_square)
+            #Location of square a pawn has double stepped to, i.e en passant may be possible
+            self.en_passant = self.record_double_move(moving_piece, from_square, to_square)
+            self.handle_promotion(moving_piece, to_square)
             self.current_player = self.current_player.opponent()
-
+    #Identifies if a pawn has double stepped. If so, it returns the location of the square it has moved to
     def record_double_move(self, moving_piece, from_square, to_square):
         if isinstance(moving_piece,Pawn):
             if abs(from_square.row - to_square.row) > 1:
                 return to_square
         return None
 
+    #Checks moving piece is a pawn gets the previous 'en passant' double step made by another pawn
     def handle_en_passant_capture(self, moving_piece, to_square):
         if self.en_passant is None:
             return
@@ -142,3 +145,20 @@ class Board:
                         self.set_piece(Square.at(7, 7), None)
                         self.set_piece(Square.at(7, 5), Rook(self.current_player))
         return
+
+    def handle_promotion(self, moving_piece, to_square):
+        if isinstance(moving_piece, Pawn):
+            if to_square.row == 0 or to_square.row == 7:
+                piece = input("Select piece to promote pawn to: 'Q', 'K', 'R' or 'B'.")
+                if piece == 'Q':
+                    self.set_piece(to_square, Queen(self.current_player))
+                elif piece == 'K':
+                    self.set_piece(to_square, Knight(self.current_player))
+                elif piece == 'R':
+                    self.set_piece(to_square, Rook(self.current_player))
+                elif piece == 'B':
+                    self.set_piece(to_square, Bishop(self.current_player))
+                else:
+                    self.set_piece(to_square, Queen(self.current_player))
+        return
+
