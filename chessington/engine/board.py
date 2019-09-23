@@ -8,6 +8,7 @@ from enum import Enum, auto
 
 from chessington.engine.data import Player, Square
 from chessington.engine.pieces import Pawn, Knight, Bishop, Rook, Queen, King
+import sys
 
 BOARD_SIZE = 8
 
@@ -94,12 +95,14 @@ class Board:
                     return Square.at(row, col)
         raise Exception('The supplied piece is not on the board')
 
+
     def move_piece(self, from_square, to_square):
         """
         Moves the piece from the given starting square to the given destination square.
         """
         moving_piece = self.get_piece(from_square)
         if moving_piece is not None and moving_piece.player == self.current_player:
+            self.checkmate(to_square)
             moving_piece.has_moved = True
             self.set_piece(to_square, moving_piece)
             self.set_piece(from_square, None)
@@ -161,4 +164,12 @@ class Board:
                 else:
                     self.set_piece(to_square, Queen(self.current_player))
         return
+
+    def checkmate(self, to_square):
+        if isinstance(self.get_piece(to_square), King):
+            if self.get_piece(to_square).player == self.current_player.opponent():
+                player = str(self.current_player)
+                player = player[7:]
+                print("Checkmate - Player " + player + " wins!")
+                sys.exit()
 
